@@ -1,0 +1,85 @@
+@using WebMatrix.Data;
+@using System.Diagnostics;
+@using Microsoft.AspNetCore.Mvc;
+@using Prototype1.Models;
+@using System.Data.SqlClient;
+@using System;
+@using Npgsql;
+@using System.Data;
+@using System.Text;
+@using MySql.Data;
+@using MySql.Data.MySqlClient;
+
+@using MySqlX.XDevAPI;
+@using MySqlX.XDevAPI.Common;
+@using MySqlX.XDevAPI.CRUD;
+
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Employee List</h1>
+    <p>Employee List Page</p>
+    <a class="btn btn-primary btn-sm" href="/Home/Create">Employee Create</a>
+</div>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Employee Form</title>
+</head>
+
+<body>
+
+    @{
+        string connStr = "server=localhost;user=magento;database=dotnet;port=3306;password=magento";
+        MySql.Data.MySqlClient.MySqlCommand cmd;
+        MySqlConnection conn = new MySqlConnection(connStr);
+        cmd = new MySql.Data.MySqlClient.MySqlCommand();
+
+        try
+        {
+            Console.WriteLine("Connecting to MySQL...");
+            conn.Open();
+            cmd.Connection = conn;
+
+            //***
+            // cmd.CommandText = "INSERT INTO demo VALUES(@Name, @ID, @Address, @Email)";
+            cmd.CommandText = "SELECT * FROM demo";
+            cmd.Prepare();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        Console.WriteLine("Done.");
+    }
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Address</th>
+            <th>Email</th>
+        </tr>
+        @using (var reader = cmd.ExecuteReader())
+        {
+            @while (reader.Read())
+            {
+                <tr>
+                    <td>@reader["Name"]</td>
+                    <td>@reader["ID"]</td>
+                    <td>@reader["Address"]</td>
+                    <td>@reader["Email"]</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/Home/Edit?id=@reader["ID"]">Edit</a>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</body>
+
+</html>

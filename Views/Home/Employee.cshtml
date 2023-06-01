@@ -1,0 +1,63 @@
+@using WebMatrix.Data;
+@using System.Diagnostics;
+@using Microsoft.AspNetCore.Mvc;
+@using Prototype1.Models;
+@using System.Data.SqlClient;
+@using System;
+@using Npgsql;
+@using System.Data;
+@using System.Text;
+@using MySql.Data;
+@using MySql.Data.MySqlClient;
+
+@using MySqlX.XDevAPI;
+@using MySqlX.XDevAPI.Common;
+@using MySqlX.XDevAPI.CRUD;
+
+
+
+@{
+  ViewData["Title"] = "Employee Page";
+}
+
+<div class="text-center">
+  <h1 class="display-4">Employee Management</h1>
+  <p>Employee Create Form</p>
+</div>
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Employee Form</title>
+</head>
+
+<body>
+  <form method="post">
+    <fieldset>
+      <legend>Add New Employee</legend>
+      <div>
+        <label for="EmployeeName">Employee Name:</label>
+        <input type="text" name="EmployeeName" value="" />
+      </div>
+      <div>
+        <label for="EmployeeAddress">Employee Address:</label>
+        <input type="text" name="EmployeeAddress" value="" />
+      </div>
+      <div>
+        <label for="EmployeeID">Employee ID:</label>
+        <input type="text" name="EmployeeID" value="" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <input type="submit" value="Submit" class="submit" />
+      </div>
+    </fieldset>
+  </form>
+
+
+  
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+        // List<Demo> demo = new List<Demo>();
+        // using (MySqlConnection con = new MySqlConnection("server=localhost;user=magento;database=dotnet;port=3306;password=magento"))
+        // {
+        //     con.open();
+        //     MySqlCommand cmd = new MySqlCommand("select * from demo",con);
+        //     MySqlDataReader reader = cmd.ExecuteReader();
+
+        //     // while(reader.Read())
+        //     // {
+        //     //     Demo demo = new Demo();
+        //     //     demo.Id = reader["ID"];
+
+        //     //     demo.Add(demo);
+
+        //     // }
+        //     // reader.Close();
+        // }
+
+        // MySql.Data.MySqlClient.MySqlConnection conn;
+        // string myConnectionString;
+
+        // myConnectionString = "server=localhost;uid=magento;" +
+        //     "pwd=magento;database=dotnet";
+
+
+        // try
+        // {
+        //     conn = new MySql.Data.MySqlClient.MySqlConnection();
+        //     MySql.Data.MySqlClient.MySqlCommand cmd;
+        //     cmd = new MySql.Data.MySqlClient.MySqlCommand();
+        //     conn.ConnectionString = myConnectionString;
+        //     conn.Open();
+        //     Console.Write("Success... ");
+        // SqlCommand cmd = new SqlCommand("Select * from tablename", conn);
+        // cmd.CommandText = "INSERT INTO demo VALUES(1, ff, ff)";
+        // cmd.Prepare();
+
+        // cmd.Parameters.AddWithValue("@number", 1);
+        // cmd.Parameters.AddWithValue("@text", "One");
+
+        // for (int i = 1; i <= 1000; i++)
+        // {
+        //     cmd.Parameters["@number"].Value = i;
+        //     cmd.Parameters["@text"].Value = "A string value";
+
+        //     cmd.ExecuteNonQuery();
+        // }
+        // }
+        // catch (MySql.Data.MySqlClient.MySqlException ex)
+        // {
+        //     Console.Write("Press  to exit... ");
+        // }
+
+        // string connectionString = "Host=localhost;Port=3306;Database=demo;Username=magento;Password=magento";
+        // using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+        // {
+        //     string tableName = "demo"; // Replace with your actual table name
+        //     string query = $"SELECT * FROM {tableName}";
+
+        //     connection.Open();
+
+        //     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+        //     {
+        //         using (NpgsqlDataReader reader = command.ExecuteReader())
+        //         {
+        //             while (reader.Read())
+        //             {
+        //                 // Access the data using reader.GetString(), reader.GetInt32(), etc.
+        //                 string column1Value = reader.GetString(0);
+        //                 int column2Value = reader.GetInt32(1);
+
+        //                 // Do something with the retrieved data
+        //                 Console.WriteLine($"Column1: {column1Value}, Column2: {column2Value}");
+        //             }
+        //         }
+        //     }
+        // }
+
+
+
+
+//sending data to database table using c# mvc dot NpgsqlConnection
+
+
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Prototype1.Models;
+using System.Data.SqlClient;
+using System;
+using Npgsql;
+using System.Data;
+using System.Text;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace Prototype1.Controllers;
+
+public class HomeController : Controller
+{
+    private readonly ILogger<HomeController> _logger;
+
+    public HomeController(ILogger<HomeController> logger)
+    {
+        _logger = logger;
+    }
+
+    public IActionResult Index()
+    {
+        static void DisplayData(System.Data.DataTable table)
+        {
+            foreach (System.Data.DataRow row in table.Rows)
+            {
+                foreach (System.Data.DataColumn col in table.Columns)
+                {
+                    Console.WriteLine("{0} = {1}", col.ColumnName, row[col]);
+                }
+                Console.WriteLine("============================");
+            }
+        }
+
+        string connStr = "server=localhost;user=magento;database=dotnet;port=3306;password=magento";
+        MySql.Data.MySqlClient.MySqlCommand cmd;
+        MySqlConnection conn = new MySqlConnection(connStr);
+        cmd = new MySql.Data.MySqlClient.MySqlCommand();
+
+        try
+        {
+            Console.WriteLine("Connecting to MySQL...");
+            conn.Open();
+            cmd.Connection = conn;
+
+            //***
+            cmd.CommandText = "INSERT INTO demo VALUES(@Name, @ID, @Address, @Email)";
+            cmd.Prepare();
+
+            cmd.Parameters.AddWithValue("@Name", 1);
+            cmd.Parameters.AddWithValue("@ID", 1);
+            cmd.Parameters.AddWithValue("@Address", "One");
+            cmd.Parameters.AddWithValue("@Email", "Two");
+
+            for (int i = 10; i <= 12; i++)
+            {
+                cmd.Parameters["@Name"].Value = i;
+                cmd.Parameters["@ID"].Value = i;
+                cmd.Parameters["@Address"].Value = "House NO:" + i;
+                cmd.Parameters["@Email"].Value = "newuser"+i+"@gmail.com";
+
+                cmd.ExecuteNonQuery();
+            }
+
+            DataTable table = conn.GetSchema("MetaDataCollections");
+            //DataTable table = conn.GetSchema("UDF");
+            DisplayData(table);
+
+            conn.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        Console.WriteLine("Done.");
+
+        return View();
+    }
+
+    public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    //This function is responsible to get the view page to the UI 
+    public IActionResult Employee()
+    {
+        return View();
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+}
